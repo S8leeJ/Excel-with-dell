@@ -318,56 +318,100 @@ export default function FusionTechDashboard() {
 
             {controlsTab === "reviews" && (
               <div className="mt-4 flex flex-col gap-3">
-                <label className="text-[11px] font-medium" style={{ color: COLORS.textMuted }}>
-                  Topic
-                  <select
-                    value={reviewsTopic}
-                    onChange={(e) => setReviewsTopic(e.target.value)}
-                    className="mt-1 w-full rounded-md border bg-white px-2 py-1.5 text-xs font-normal text-slate-800"
-                    style={{ borderColor: COLORS.border }}
-                  >
-                    {TOPIC_DATA.map((t) => (
-                      <option key={t.topic} value={t.topic}>
-                        {t.topic}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {topicReviewBundle && (
-                  <p className="text-[11px]" style={{ color: COLORS.textMuted }}>
-                    {topicReviewBundle.review_count} review{topicReviewBundle.review_count === 1 ? "" : "s"} in NLP export
-                  </p>
-                )}
                 <div
-                  className="max-h-[min(70vh,520px)] space-y-3 overflow-y-auto pr-1"
+                  className="rounded-xl border px-3 py-3 shadow-inner"
+                  style={{ borderColor: COLORS.border, background: "linear-gradient(180deg, #f0f6fa 0%, #ffffff 100%)" }}
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Topic filter</p>
+                  <label className="mt-2 block">
+                    <span className="sr-only">Topic</span>
+                    <select
+                      value={reviewsTopic}
+                      onChange={(e) => setReviewsTopic(e.target.value)}
+                      className="w-full rounded-lg border-2 bg-white px-2.5 py-2 text-xs font-medium text-slate-900 shadow-sm outline-none ring-0 transition-shadow focus:border-[#007DB8] focus:shadow-md"
+                      style={{ borderColor: "#c5d4e0" }}
+                    >
+                      {TOPIC_DATA.map((t) => (
+                        <option key={t.topic} value={t.topic}>
+                          {t.topic}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                {topicReviewBundle && (
+                  <div
+                    className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5"
+                    style={{
+                      borderColor: COLORS.dellBlue,
+                      backgroundColor: "rgba(0, 125, 184, 0.08)",
+                    }}
+                  >
+                    <span className="text-xs font-bold" style={{ color: COLORS.navy }}>
+                      {topicReviewBundle.review_count} review{topicReviewBundle.review_count === 1 ? "" : "s"}
+                    </span>
+
+                  </div>
+                )}
+
+                <div
+                  className="max-h-[min(70vh,520px)] overflow-y-auto rounded-xl border-2 border-slate-200/90 bg-slate-100/90 p-2 shadow-inner"
                   style={{ scrollbarGutter: "stable" }}
                 >
                   {topicReviewsList.length === 0 ? (
-                    <p className="text-xs" style={{ color: COLORS.textMuted }}>
-                      No reviews for this topic in the dataset.
-                    </p>
+                    <p className="px-2 py-6 text-center text-xs text-slate-500">No reviews for this topic in the dataset.</p>
                   ) : (
-                    topicReviewsList.map((r, i) => (
-                      <article
-                        key={`${r.date}-${i}`}
-                        className="rounded-lg border p-2.5 text-xs shadow-sm"
-                        style={{ borderColor: COLORS.border }}
-                      >
-                        <p className="font-semibold leading-snug text-slate-800">{r.title}</p>
-                        <p className="mt-1 text-[10px]" style={{ color: COLORS.textMuted }}>
-                          {r.date} · {r.rating} stars
-                          {typeof r.topic_confidence === "number" && (
-                            <span> · Topic match {(r.topic_confidence * 100).toFixed(1)}%</span>
-                          )}
-                        </p>
-                        <p className="mt-2 max-h-36 overflow-y-auto leading-relaxed text-slate-700">{r.review}</p>
-                        {r.product && (
-                          <p className="mt-2 line-clamp-2 text-[10px]" style={{ color: COLORS.textMuted }}>
-                            {r.product}
-                          </p>
-                        )}
-                      </article>
-                    ))
+                    <ul className="space-y-2.5">
+                      {topicReviewsList.map((r, i) => (
+                        <li key={`${r.date}-${i}`}>
+                          <article
+                            className="overflow-hidden rounded-lg border border-slate-200/90 bg-white text-xs shadow-md ring-1 ring-black/[0.04]"
+                            style={{ borderLeftWidth: "4px", borderLeftColor: COLORS.dellBlue }}
+                          >
+                            <div className="flex items-start gap-2 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white px-2.5 py-2">
+                              <span
+                                className="mt-0.5 flex h-5 min-w-[1.35rem] items-center justify-center rounded text-[10px] font-bold text-white"
+                                style={{ backgroundColor: COLORS.dellBlue }}
+                              >
+                                {i + 1}
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="font-bold leading-snug text-slate-900">{r.title}</p>
+                                <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                                  <span
+                                    className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold"
+                                    style={{
+                                      backgroundColor: r.rating <= 2 ? "rgba(230, 57, 70, 0.12)" : "rgba(244, 162, 97, 0.2)",
+                                      color: r.rating <= 2 ? COLORS.red : "#9a3412",
+                                    }}
+                                  >
+                                    {r.rating}★ rating
+                                  </span>
+                                  <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] text-slate-600">{r.date}</span>
+                                  {typeof r.topic_confidence === "number" && (
+                                    <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800">
+                                      {(r.topic_confidence * 100).toFixed(0)}% match
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="px-2.5 py-2.5">
+                              <div className="max-h-40 overflow-y-auto rounded-md border border-slate-100 bg-slate-50/90 px-2 py-2 leading-relaxed text-slate-800">
+                                {r.review}
+                              </div>
+                              {r.product && (
+                                <p className="mt-2 border-t border-slate-100 pt-2 text-[10px] leading-snug text-slate-500">
+                                  <span className="font-semibold text-slate-600">Product: </span>
+                                  {r.product}
+                                </p>
+                              )}
+                            </div>
+                          </article>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
               </div>
